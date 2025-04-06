@@ -28,13 +28,15 @@ class MainActivity : ComponentActivity() {
 fun BMICalc() {
     var weight by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
-    var bmiResult by remember { mutableStateOf<Float?>(null) }
+    var bmiResult by remember { mutableStateOf<Float>(0f) }
+    var showBmiResult by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         BMICalcForm(
+            sbmi = showBmiResult,
             weight = weight,
             height = height,
             onWeightChange = { weight = it },
@@ -48,11 +50,15 @@ fun BMICalc() {
             }
         )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        BMICalcResult(sbmi = showBmiResult, bmi = bmiResult)
+
     }
 }
 
 @Composable
-fun BMICalcForm(weight: String, height: String, onWeightChange: (String) -> Unit, onHeightChange: (String) -> Unit, onCalculateClick: () -> Unit) {
+fun BMICalcForm(sbmi: Boolean,weight: String, height: String, onWeightChange: (String) -> Unit, onHeightChange: (String) -> Unit, onCalculateClick: () -> Unit) {
     Column {
         OutlinedTextField(
             value = weight,
@@ -82,8 +88,36 @@ fun BMICalcForm(weight: String, height: String, onWeightChange: (String) -> Unit
 }
 
 @Composable
-fun BMICalcResult() {
+fun BMICalcResult(sbmi:Boolean, bmi: Float) {
+    var category = ""
 
+    if (bmi < 18.5f) {
+        category = "Underweight"
+    } else if (bmi < 25f) {
+        category = "Normal"
+    } else if (bmi < 30f) {
+        category = "Overweight"
+    } else {
+        category = "Obese"
+    }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ){
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Tu IMC es: %.2f".format(bmi),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Categoría: $category",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
