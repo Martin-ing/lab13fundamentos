@@ -43,16 +43,42 @@ fun BMICalc() {
                 val newWeight = weight.toFloatOrNull() ?: 0f
                 val newHeight = height.toFloatOrNull() ?: 0f
                 if (newHeight > 0) {
-                    bmiResult = newWeight / (newHeight * newHeight)
+                    bmiResult = (newWeight * 0.453592f) / (newHeight * newHeight * 0.0001f)
                 }
             }
         )
+
     }
 }
 
 @Composable
 fun BMICalcForm(weight: String, height: String, onWeightChange: (String) -> Unit, onHeightChange: (String) -> Unit, onCalculateClick: () -> Unit) {
+    Column {
+        OutlinedTextField(
+            value = weight,
+            onValueChange = onWeightChange,
+            label = { Text("Peso (lbs)") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = height,
+            onValueChange = onHeightChange,
+            label = { Text("Altura (cm)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onCalculateClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Calcular IMC")
+        }
+    }
 }
 
 @Composable
